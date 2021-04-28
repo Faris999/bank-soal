@@ -11,21 +11,41 @@ class App extends React.Component<any, any> {
       answerShown: false,
       question: "Apa itu A?",
       answers: [
-        { answerText: 'a', isCorrect: true },
-        { answerText: 'b', isCorrect: false },
-        { answerText: 'c', isCorrect: false },
-        { answerText: 'd', isCorrect: false }]
+        { answerText: 'a', isCorrect: true, isClicked: false },
+        { answerText: 'b', isCorrect: false, isClicked: false },
+        { answerText: 'c', isCorrect: false, isClicked: false },
+        { answerText: 'd', isCorrect: false, isClicked: false }]
     }
-    this.showCorrectAnswer = this.showCorrectAnswer.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+  }
+
+  handleClick(answer: Answer) {
+    console.log('a')
+    return () => {
+      this.setState((state: any) => {
+        if (!state.answerShown) {
+          state.answers.forEach(function (part: Answer, index: number, arr: Array<Answer>) {
+            if (part.answerText === answer.answerText) {
+              arr[index].isClicked = true;
+            }
+          })
+          return { answers: state.answers, answerShown: true }
+        }
+      })
+    }
   }
 
   showCorrectAnswer() {
-    this.setState({answerShown: true})
+    this.setState({ answerShown: true })
   }
 
   getClassName(answer: Answer): string {
     if (this.state.answerShown) {
-      return answer.isCorrect ? 'correct' : 'wrong'
+      if (answer.isCorrect) {
+        return 'correct'
+      } else if (answer.isClicked) {
+        return answer.isCorrect ? 'correct' : 'wrong'
+      }
     }
     return ''
   }
@@ -37,7 +57,7 @@ class App extends React.Component<any, any> {
         <ul>
           {
             this.state.answers.map((answer: Answer) => (
-              <li key={answer.answerText} className={this.getClassName(answer)} onClick={this.showCorrectAnswer}>{answer.answerText}</li>
+              <li key={answer.answerText} className={this.getClassName(answer)} onClick={this.handleClick(answer)}>{answer.answerText}</li>
             ))
           }
         </ul>
@@ -46,31 +66,5 @@ class App extends React.Component<any, any> {
     );
   }
 }
-
-// const showAnswer = () => {
-//   this.setState
-// }
-
-// const answersList = (answers: Array<Answer>) => {
-//   return answers.map((answer: Answer) => {
-//     return (
-//       <li className="" key={answer.answerText} onClick={showAnswer}>
-//         {answer.answerText}
-//       </li>
-//     );
-//   })
-// }
-
-// function QuestionComponent(props: any) {
-//   console.log(props)
-//   return (
-//     <div className="Question">
-//       <p>{props.question}</p>
-//       <ul>
-//         {answersList(props.answers)}
-//       </ul>
-//     </div>
-//   );
-// }
 
 export default App;

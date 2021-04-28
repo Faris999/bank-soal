@@ -5,5 +5,6 @@ export type Question = {
 
 export type Answer = {
     answerText: string,
-    isCorrect: boolean
+    isCorrect: boolean,
+    isClicked: boolean
 };
