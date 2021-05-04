@@ -1,33 +1,42 @@
-var Datastore = require('nedb');
-var db = new Datastore({ filename: './database/data.db', autoload: true });
+require('dotenv').config();
+const mongoose = require('mongoose');
 
-db.insert({ _id: '__autoid__', value: -1 });
+const MONGO_URI = process.env.MONGO_URI;
 
-db.insertSequential = function (docs, callback) {
-  db.getNextId(function(err, id) {
-    if (err) {
-      callback && callback(err)
-    }
-    docs._id = id;
-    db.insert(docs, callback);
-  })
-}
+mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-db.getNextId = function (onFind) {
-  console.log('b')
-  db.findOne({ _id: '__autoid__' }, function (err, doc) {
-    console.log('c')
-    if (err) {
-      onFind && onFind(err)
-    } else {
-      // Update and returns the index value
-      db.update({ _id: '__autoid__' }, { $set: { value: ++doc.value } }, {},
-        function (err, count) {
-          onFind && onFind(err, doc.value);
-        });
-    }
-  });
-  return db;
-}
+const Schema = mongoose.Schema;
 
-module.exports = db;
+const answerSchema = new Schema({
+  answerText: {
+    type: String,
+    required: true
+  },
+  isCorrect: {
+    type: Boolean,
+    default: false
+  },
+  image: {
+    type: String
+  }
+});
+
+const questionSchema = new Schema({
+  question: {
+    type: String,
+    required: true
+  },
+  answers: {
+    type: [answerSchema],
+    required: true,
+    validate: [(value) => {
+      return value.length > 1 && value.filter((el) => el.isCorrect).length === 1
+    }, "Must be only 1 correct"]
+  },
+  tags: [String]
+});
+
+const Answer = new mongoose.model('Answer', answerSchema);
+const Question = new mongoose.model('Question', questionSchema)
+
+module.exports = {Question}

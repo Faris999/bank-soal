@@ -1,31 +1,32 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../database');
-
 router.get('/problem/:problemId');
 
 router.get('/problems', function (req, res, next) {
-  db.find({}, function (err, docs) {
+  db.Question.find({}, function (err, docs) {
+    if (err) {
+      return next(err);
+    }
     res.json(docs);
   });
 });
 
 router.post('/newProblem', function (req, res, next) {
   body = req.body;
-  if (body.question === undefined) {
-    res.status(400).send('Invalid Question');
-  } else if (body.answers === undefined || !Array.isArray(body.answers)) {
-    res.status(400).send('Invalid Answers');
-  } else {
-    docs = {
-      question: req.body.question,
-      answers: req.body.answers
-    };
 
-    db.insertSequential(docs, function (err, docs) {
-      res.json(docs);
-    });
-  }
+  docs = new db.Question({
+    question: req.body.question,
+    answers: req.body.answers
+  });
+
+  docs.save((err, data) => {
+    if (err) {
+      console.log(err)
+      return next(err);
+    }
+    res.json(data);
+  })
 });
 
 module.exports = router;
