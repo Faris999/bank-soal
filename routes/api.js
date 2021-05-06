@@ -12,17 +12,18 @@ router.get('/problems', function (req, res, next) {
   });
 });
 
-router.post('/newProblem', function (req, res, next) {
+router.post('/problem', function (req, res, next) {
   body = req.body;
 
   docs = new db.Question({
     question: req.body.question,
-    answers: req.body.answers
+    answers: req.body.answers,
+    tags: req.body.tags
   });
 
   docs.save((err, data) => {
     if (err) {
-      console.log(err)
+      console.log(err);
       return next(err);
     }
     res.json(data);
