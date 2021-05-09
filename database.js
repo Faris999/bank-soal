@@ -7,6 +7,13 @@ mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const Schema = mongoose.Schema;
 
+const CounterSchema = Schema({
+  _id: {type: String, required: true},
+  seq: { type: Number, default: 0 }
+});
+
+const Counter = mongoose.model('counter', CounterSchema);
+
 const answerSchema = new Schema({
   answerText: {
     type: String,
@@ -22,6 +29,7 @@ const answerSchema = new Schema({
 }, {_id: false});
 
 const questionSchema = new Schema({
+  _id: Number,
   question: {
     type: String,
     required: true
@@ -38,6 +46,18 @@ const questionSchema = new Schema({
     type: String,
     required: true
   }
+});
+
+questionSchema.pre('save', function(next) {
+  var doc = this;
+  Counter.findByIdAndUpdate({_id: 'entityId'}, {$inc: { seq: 1} }, {useFindAndModify: false, new: true, upsert: true}, function(error, counter)   {
+      if(error) {
+          console.error(error)
+          return next(error);
+      }
+      doc._id = counter.seq;
+      next();
+  });
 });
 
 const Answer = new mongoose.model('Answer', answerSchema);
