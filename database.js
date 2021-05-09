@@ -60,7 +60,22 @@ questionSchema.pre('save', function(next) {
   });
 });
 
+
+questionSchema.pre('insertMany', function(next) {
+  var doc = this;
+  console.log(doc._id)
+  next()
+  // Counter.findByIdAndUpdate({_id: 'entityId'}, {$inc: { seq: 1} }, {useFindAndModify: false, new: true, upsert: true}, function(error, counter)   {
+  //     if(error) {
+  //         console.error(error)
+  //         return next(error);
+  //     }
+  //     doc._id = counter.seq;
+  //     next();
+  // });
+});
+
 const Answer = new mongoose.model('Answer', answerSchema);
 const Question = new mongoose.model('Question', questionSchema)
 
-module.exports = {Question}
+module.exports = {Question, Counter}

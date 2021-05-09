@@ -12,6 +12,31 @@ router.get('/problems', function (req, res, next) {
   });
 });
 
+router.post('/problems', function (req, res, next) {
+  body = req.body;
+  
+  console.log(body)
+
+  db.Counter.findByIdAndUpdate({_id: 'entityId'}, {$inc: { seq: req.body.length} }, {useFindAndModify: false, new: true, upsert: true}, function(error, counter)   {
+    if(error) {
+        console.error(error)
+        return next(error);
+    }
+    db.Question.insertMany(req.body.map((problem, i) => ({
+      ...problem,
+      _id: counter.seq + i + 1 - req.body.length
+    })), (err, data) => {
+      if (err) {
+        console.error(err)
+        return res.status(400).json(err);
+      }
+      res.json(data);
+    })
+});
+
+  
+});
+
 router.post('/problem', function (req, res, next) {
   body = req.body;
   console.log(body)
