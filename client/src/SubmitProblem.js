@@ -62,7 +62,8 @@ export default class SubmitProblem extends Component {
     axios.post('/api/problem', {
       question: this.state.question,
       answers: Object.values(this.state.answers),
-      tags: this.state.tags
+      tags: this.state.tags,
+      subject: this.state.subject
     }).then(res => console.log(res.data))
       .then(() => {
         this.setState({
