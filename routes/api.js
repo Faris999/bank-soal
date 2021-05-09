@@ -14,17 +14,18 @@ router.get('/problems', function (req, res, next) {
 
 router.post('/problem', function (req, res, next) {
   body = req.body;
+  console.log(body)
 
   docs = new db.Question({
     question: req.body.question,
     answers: req.body.answers,
-    tags: req.body.tags
+    tags: req.body.tags,
+    subject: req.body.subject
   });
 
   docs.save((err, data) => {
     if (err) {
-      console.log(err);
-      return next(err);
+      return res.status(400).json(err);
     }
     res.json(data);
   })

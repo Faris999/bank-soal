@@ -19,7 +19,7 @@ const answerSchema = new Schema({
   image: {
     type: String
   }
-});
+}, {_id: false});
 
 const questionSchema = new Schema({
   question: {
@@ -33,7 +33,11 @@ const questionSchema = new Schema({
       return value.length > 1 && value.filter((el) => el.isCorrect).length === 1
     }, "Must be only 1 correct"]
   },
-  tags: [String]
+  tags: [String],
+  subject: {
+    type: String,
+    required: true
+  }
 });
 
 const Answer = new mongoose.model('Answer', answerSchema);
