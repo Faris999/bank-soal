@@ -7,7 +7,8 @@ import SubmitProblem from './SubmitProblem';
 class App extends Component {
 
   state = {
-    query: ''
+    query: '',
+    queryToSend: ''
   }
 
   onChange = e => {
@@ -18,7 +19,7 @@ class App extends Component {
 
   onSubmit = e => {
     e.preventDefault()
-    console.log(this.state.query);
+    this.setState(state => ({queryToSend: state.query}))
   }
 
   render() {
@@ -43,7 +44,7 @@ class App extends Component {
             </div>
           </nav>
 
-          <Route path="/" exact ></Route>
+          <Route path="/" exact render={() => <ProblemSearch query={this.state.queryToSend}/>}></Route>
           <Route path="/submit" component={SubmitProblem}></Route>
         </div>
       </Router>

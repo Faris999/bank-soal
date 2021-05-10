@@ -22,7 +22,7 @@ function Answer({ letter, answer, id, onTextChange, onCorrectChange, onDelete })
       <span className="input-group-text">{letter}. </span>
       <input type="text" className="form-control" placeholder="Answer" aria-label="Answer" value={answer.answerText} onChange={handleChange} />
       <div className="input-group-text">
-        <input className="form-check-input mt-0" type="checkbox" value={answer.isCorrect} onChange={handleCorrect} />
+        <input className="form-check-input mt-0" type="checkbox" value={answer.isCorrect} checked={answer.isCorrect} onChange={handleCorrect} />
       </div>
       <span className="input-group-text">Is Correct</span>
       {letter !== 'A' &&
@@ -51,10 +51,15 @@ export default class SubmitProblem extends Component {
         isCorrect: false
       }
     },
-    tags: [],
+    tags: '',
     subject: '',
     success: false,
     error: false
+  }
+
+  handleKeyDown = e => {
+    e.target.style.height = 'inherit';
+    e.target.style.height = `${e.target.scrollHeight + 25}px`; 
   }
 
   handleSubmit = e => {
@@ -62,7 +67,7 @@ export default class SubmitProblem extends Component {
     axios.post('/api/problem', {
       question: this.state.question,
       answers: Object.values(this.state.answers),
-      tags: this.state.tags,
+      tags: this.state.tags.split(','),
       subject: this.state.subject
     }).then(res => console.log(res.data))
       .then(() => {
@@ -83,7 +88,8 @@ export default class SubmitProblem extends Component {
               answerText: '',
               isCorrect: false
             }
-          }
+          },
+          question: ''
         }, () => setTimeout(() => this.setState({ success: false }), 3000))
       })
       .catch(err => this.setState({error: err.response.data.message}, () => setTimeout(() => this.setState({ error: false }), 3000)))
@@ -138,23 +144,12 @@ export default class SubmitProblem extends Component {
     }))
   }
 
-  onTagDelete = i => {
-    this.setState(state => {
-      const { tags } = state
-      return { tags: tags.filter((tag, index) => index !== i) }
-    })
-  }
-
-  onTagAdd = tag => {
-    this.setState(state => ({ tags: [...state.tags, tag] }))
-  }
-
   render() {
     return (
       <form onSubmit={this.handleSubmit}>
         <div className="mb-3">
           <label className="form-label">Question</label>
-          <textarea type="text" className="form-control" name="question" value={this.state.question} onChange={this.handleChange} />
+          <textarea onKeyDown={this.handleKeyDown} type="text" className="form-control" name="question" value={this.state.question} onChange={this.handleChange} />
         </div>
         {Object.keys(this.state.answers).map((answer, i) => (
           <Answer key={answer}
@@ -167,12 +162,19 @@ export default class SubmitProblem extends Component {
             onDelete={this.onDelete} />
         ))}
 
+        
+        <button type="button" className="btn btn-secondary mb-3" onClick={this.addAnswer}>Add Answer</button>
+
         <div className="mb-3">
           <label className="form-label">Subject</label>
           <input type="text" className="form-control" name="subject" value={this.state.subject} onChange={this.handleChange} />
         </div>
 
-        <button type="button" className="btn btn-secondary me-3" onClick={this.addAnswer}>Add Answer</button>
+        <div className="mb-3">
+          <label className="form-label">Tags (comma-separated, no spaces)</label>
+          <input type="text" className="form-control" name="tags" value={this.state.tags} onChange={this.handleChange} />
+        </div>
+
         <button type="submit" className="btn btn-primary">Submit</button>
         {
           this.state.success &&

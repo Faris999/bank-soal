@@ -1,51 +1,35 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import Problem from './Problem'
 import Client from './Client'
 
-export default class ProblemSearch extends Component {
+export default class ProblemSearch extends PureComponent {
 
   state = {
     problems: [],
-    searchValue: ''
+    prevQuery: ''
   };
-
-  handleSearchChange = e => {
-    const value = e.target.value;
-    this.setState({
-      searchValue: value
-    });
-
-    if (value === '') {
-      this.setState({
-        problems: []
-      })
-    } else {
-      Client.search(value, problems => {
+  
+  componentDidUpdate() {
+    console.log('componentDidUpdate')
+    console.log(this.props)
+    if (this.props.query !== this.state.prevQuery) {
+      Client.search(this.props.query, problems => {
         console.log(problems)
         this.setState({
-          problems: problems
+          problems: problems,
+          prevQuery: this.props.query
         })
       })
     }
   }
 
-  handleSearchCancel = () => {
-
-  }
 
   render() {
     return (
       <div className="ProblemSearch">
-        <input
-          className="prompt"
-          type="text"
-          placeholder="Search here..."
-          value={this.state.searchValue}
-          onChange={this.handleSearchChange}
-        />
         {
           this.state.problems.map((problem, idx) => (
-            <Problem key={idx} problem={problem}/>
+            <Problem key={idx} problem={problem} />
           ))
         }
       </div>

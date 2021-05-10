@@ -28,6 +28,8 @@ const answerSchema = new Schema({
   }
 }, {_id: false});
 
+answerSchema.index({ answerText: 'text'});
+
 const questionSchema = new Schema({
   _id: Number,
   question: {
@@ -47,6 +49,8 @@ const questionSchema = new Schema({
     required: true
   }
 });
+
+questionSchema.index({ question: 'text', subject: 'text', tags: 'text'});
 
 questionSchema.pre('save', function(next) {
   var doc = this;

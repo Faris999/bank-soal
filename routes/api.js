@@ -4,8 +4,16 @@ var db = require('../database');
 router.get('/problem/:problemId');
 
 router.get('/problems', function (req, res, next) {
-  db.Question.find({}, function (err, docs) {
+
+  const query = req.query.q;
+  let search = {}
+  if (query) {
+    search = { $or: [{ 'answers.answerText': { $regex: query, $options: 'i' } }, { question: { $regex: query, $options: 'i' } }, { tags: { $regex: query, $options: 'i' } }, { subject: { $regex: query, $options: 'i' } }] }
+  }
+
+  db.Question.find(search, function (err, docs) {
     if (err) {
+      console.log(err);
       return next(err);
     }
     res.json(docs);
@@ -14,13 +22,13 @@ router.get('/problems', function (req, res, next) {
 
 router.post('/problems', function (req, res, next) {
   body = req.body;
-  
+
   console.log(body)
 
-  db.Counter.findByIdAndUpdate({_id: 'entityId'}, {$inc: { seq: req.body.length} }, {useFindAndModify: false, new: true, upsert: true}, function(error, counter)   {
-    if(error) {
-        console.error(error)
-        return next(error);
+  db.Counter.findByIdAndUpdate({ _id: 'entityId' }, { $inc: { seq: req.body.length } }, { useFindAndModify: false, new: true, upsert: true }, function (error, counter) {
+    if (error) {
+      console.error(error)
+      return next(error);
     }
     db.Question.insertMany(req.body.map((problem, i) => ({
       ...problem,
@@ -32,9 +40,9 @@ router.post('/problems', function (req, res, next) {
       }
       res.json(data);
     })
-});
+  });
 
-  
+
 });
 
 router.post('/problem', function (req, res, next) {
