@@ -53,11 +53,13 @@ router.post('/problem', function (req, res, next) {
     question: req.body.question,
     answers: req.body.answers,
     tags: req.body.tags,
-    subject: req.body.subject
+    subject: req.body.subject,
+    source: req.body.source
   });
 
   docs.save((err, data) => {
     if (err) {
+      console.log(err)
       return res.status(400).json(err);
     }
     res.json(data);

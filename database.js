@@ -47,7 +47,8 @@ const questionSchema = new Schema({
   subject: {
     type: String,
     required: true
-  }
+  },
+  source: String
 });
 
 questionSchema.index({ question: 'text', subject: 'text', tags: 'text'});

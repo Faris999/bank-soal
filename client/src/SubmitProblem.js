@@ -53,6 +53,7 @@ export default class SubmitProblem extends Component {
     },
     tags: '',
     subject: '',
+    source: '',
     success: false,
     error: false
   }
@@ -68,7 +69,8 @@ export default class SubmitProblem extends Component {
       question: this.state.question,
       answers: Object.values(this.state.answers),
       tags: this.state.tags.split(','),
-      subject: this.state.subject
+      subject: this.state.subject,
+      source: this.state.source
     }).then(res => console.log(res.data))
       .then(() => {
         this.setState({
@@ -175,7 +177,10 @@ export default class SubmitProblem extends Component {
           <input type="text" className="form-control" name="tags" value={this.state.tags} onChange={this.handleChange} />
         </div>
 
-        <button type="submit" className="btn btn-primary">Submit</button>
+        <div className="mb-3">
+          <label className="form-label">Source</label>
+          <input type="text" className="form-control" name="source" value={this.state.source} onChange={this.handleChange} />
+        </div>
         {
           this.state.success &&
           <div class="alert alert-success mt-3" role="alert">
@@ -188,6 +193,8 @@ export default class SubmitProblem extends Component {
             {this.state.error}
           </div>
         }
+        <button type="submit" className="btn btn-primary">Submit</button>
+        
       </form>
     )
   }
