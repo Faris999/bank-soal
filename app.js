@@ -19,8 +19,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', express.static('./client/build'));
 app.use('/api', apiRouter);
+app.use('/static', express.static('./client/build/static'));
+app.use('/*', (req, res) => {
+  res.sendFile('client/build/index.html', { root: __dirname })
+})
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
