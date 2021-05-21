@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom';
 import ProblemSearch from './ProblemSearch'
 import SubmitProblem from './SubmitProblem';
 import Quiz from './Quiz';
+import Result from './Result'
+import Review from './Review'
+import './App.css'
 
 class App extends Component {
   render() {
@@ -15,6 +18,8 @@ class App extends Component {
           <Route path="/search" render={props => <ProblemSearch {...props} />}></Route>
           <Route path="/submit" component={SubmitProblem}></Route>
           <Route path="/quiz" component={Quiz}></Route>
+          <Route path="/result" component={Result}></Route>
+          <Route path="/review" component={Review}></Route>
         </div>
       </Router>
     );

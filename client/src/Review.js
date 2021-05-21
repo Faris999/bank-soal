@@ -2,8 +2,8 @@ import { useState } from "react";
 
 export default function Quiz(props) {
     const problems = props.location?.state?.problems || ['invalid'];
+    const answers = props.location?.state?.answers || ['invalid'];
     const [index, setIndex] = useState(0);
-    const [answers, setAnswers] = useState(new Array(problems.length).fill(0));
     const [indexInput, setIndexInput] = useState(1);
     const currentProblem = problems[index];
 
@@ -31,16 +31,17 @@ export default function Quiz(props) {
         }
     }
 
-    const handleClick = i => {
-        return () => {
-            let prevAns = [...answers];
-            prevAns[index] = i
-            setAnswers(prevAns)
-        }
+    const getClassName = i => {
+            if (currentProblem.answers[i].isCorrect) {
+                return 'correct'
+            } else if (answers[index] === i) {
+                return 'wrong'
+            }
+            return ''
     }
 
-    const submit = () => {
-        props.history.push('/result', {problems, answers})
+    const reattempt = () => {
+        props.history.push('/quiz', {problems})
     }
 
     if (currentProblem === 'invalid') {
@@ -55,17 +56,11 @@ export default function Quiz(props) {
             <p>{currentProblem.question}</p>
             
             {currentProblem.answers.map((ans, i) => (
-                <div className="form-check" key={i}>
-                <input className="form-check-input" type="radio" name="flexRadioDefault" id={"flexRadioDefault"+i} checked={answers[index] === i} onChange={handleClick(i)}/>
-                <label className="form-check-label" htmlFor={"flexRadioDefault"+i}  onClick={handleClick(i)}>
+                <div className={getClassName(i)} key={i}>
                 {ans.answerText}
-            </label>
             </div>
             ))}
-            
-            {index === problems.length-1 && 
-                <button className="btn btn-primary" onClick={submit}>Submit</button>
-            }
+            <button className="btn btn-primary" onClick={reattempt}>Reattempt</button>
         </div>
     )
 }
