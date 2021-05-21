@@ -32,16 +32,16 @@ export default function Quiz(props) {
     }
 
     const getClassName = i => {
-            if (currentProblem.answers[i].isCorrect) {
-                return 'correct'
-            } else if (answers[index] === i) {
-                return 'wrong'
-            }
-            return ''
+        if (currentProblem.answers[i].isCorrect) {
+            return 'correct'
+        } else if (answers[index] === i) {
+            return 'wrong'
+        }
+        return ''
     }
 
     const reattempt = () => {
-        props.history.push('/quiz', {problems})
+        props.history.push('/quiz', { problems })
     }
 
     if (currentProblem === 'invalid') {
@@ -52,14 +52,17 @@ export default function Quiz(props) {
         <div>
             <button className="btn btn-light" onClick={prev} disabled={index === 0}>Previous</button>
             <span><input value={indexInput} onChange={e => setIndexInput(e.target.value)} onKeyDown={handleSubmit} /> of {problems.length}</span>
-            <button className="btn btn-light" onClick={next} disabled={index === problems.length-1}>Next</button>
+            <button className="btn btn-light" onClick={next} disabled={index === problems.length - 1}>Next</button>
             <p>{currentProblem.question}</p>
-            
+
             {currentProblem.answers.map((ans, i) => (
                 <div className={getClassName(i)} key={i}>
-                {ans.answerText}
-            </div>
+                    {ans.answerText}
+                </div>
             ))}
+
+            <p>tags: {currentProblem.tags.join(', ')}</p>
+            <p>Source: {currentProblem.source}</p>
             <button className="btn btn-primary" onClick={reattempt}>Reattempt</button>
         </div>
     )
