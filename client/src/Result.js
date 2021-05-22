@@ -3,7 +3,7 @@ export default function Result(props) {
     const answers = props.location?.state?.answers || ['invalid'];
 
     const numCorrect = problems.reduce((acc, problem, i) => {
-        return acc + problem.answers[answers[i]].isCorrect
+        return acc + (answers[i] !== -1 && problem.answers[answers[i]].isCorrect)
     }, 0)
 
     const review = () => {
