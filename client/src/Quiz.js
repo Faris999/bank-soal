@@ -3,7 +3,7 @@ import { useState } from "react";
 export default function Quiz(props) {
     const problems = props.location?.state?.problems || ['invalid'];
     const [index, setIndex] = useState(0);
-    const [answers, setAnswers] = useState(new Array(problems.length).fill(-1));
+    const [answers, setAnswers] = useState(new Array(problems.length).fill(0));
     const [indexInput, setIndexInput] = useState(1);
     const currentProblem = problems[index];
 
