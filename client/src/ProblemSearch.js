@@ -11,7 +11,8 @@ export default class ProblemSearch extends PureComponent {
 
   componentDidMount() {
     console.log('mount')
-    const query = this.props.location.state.query;
+    const query = new URLSearchParams(this.props.location.search).get('q');
+    console.log(query)
     Client.search(query, problems => {
       console.log(problems)
       this.setState({
@@ -22,7 +23,8 @@ export default class ProblemSearch extends PureComponent {
   }
 
   componentDidUpdate() {
-    const query = this.props.location.state.query;
+    const query = new URLSearchParams(this.props.location.search).get('q');
+    console.log(query)
     console.log('update')
     if (query !== this.state.prevQuery) {
       Client.search(query, problems => {

@@ -28,11 +28,11 @@ class App extends Component {
 
 function NavBar(props) {
 
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(new URLSearchParams(props.location.search).get('q') || '');
 
   const onSubmit = e => {
     e.preventDefault();
-    props.history.push('/search', {query})
+    props.history.push(`/search?q=${query}`)
   }
 
   return (
