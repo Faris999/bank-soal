@@ -10,6 +10,7 @@ export default class ProblemSearch extends PureComponent {
   };
 
   componentDidMount() {
+    window.MathJax.typeset()
     console.log('mount')
     const query = new URLSearchParams(this.props.location.search).get('q');
     console.log(query)
@@ -25,6 +26,7 @@ export default class ProblemSearch extends PureComponent {
   componentDidUpdate() {
     const query = new URLSearchParams(this.props.location.search).get('q');
     console.log(query)
+    window.MathJax.typeset()
     console.log('update')
     if (query !== this.state.prevQuery) {
       Client.search(query, problems => {

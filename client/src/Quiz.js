@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Quiz(props) {
     const problems = props.location?.state?.problems || ['invalid'];
@@ -6,6 +6,8 @@ export default function Quiz(props) {
     const [answers, setAnswers] = useState(new Array(problems.length).fill(0));
     const [indexInput, setIndexInput] = useState(1);
     const currentProblem = problems[index];
+    
+    useEffect(() => window.MathJax.typeset())
 
     const setIndexSafe = i => {
         let clamped = clamp(0, problems.length - 1, i - 1)
